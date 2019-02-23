@@ -4,15 +4,16 @@ import argparse
 import time
 
 
-left_down = lambda: ctypes.windll.user32.mouse_event(2, 0, 0, 0, 0)
-left_up = lambda: ctypes.windll.user32.mouse_event(4, 0, 0, 0, 0)
+def mouse_click():
+    """Two events mouse down and up to create one event click."""
+    ctypes.windll.user32.mouse_event(2, 0, 0, 0, 0)
+    ctypes.windll.user32.mouse_event(4, 0, 0, 0, 0)
 
 
 async def click(event, delay):
     while await asyncio.wait([event.wait(), asyncio.sleep(delay)]):
         if event.is_set():
-            left_down()
-            left_up()
+            mouse_click()
             print(time.ctime())
 
 
