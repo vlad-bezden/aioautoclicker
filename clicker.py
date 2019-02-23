@@ -9,7 +9,6 @@ left_up = lambda: ctypes.windll.user32.mouse_event(4, 0, 0, 0, 0)
 
 
 async def click(event, delay=5):
-    # while True:
     while await event.wait():
         await asyncio.sleep(delay)
         if event.is_set():
