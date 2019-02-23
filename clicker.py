@@ -2,34 +2,31 @@ import asyncio
 import ctypes
 import argparse
 import time
-from enum import IntFlag
 
 
-class State(IntFlag):
-    PAUSED = 0
-    RUNNING = 1
-
-
-async def click(delay=5):
+async def click(event, delay=5):
     while True:
+        await event.wait()
+        await asyncio.sleep(delay)
         ctypes.windll.user32.mouse_event(2, 0, 0, 0, 0)  # left down
         ctypes.windll.user32.mouse_event(4, 0, 0, 0, 0)  # left up
-        await asyncio.sleep(delay)
         print(time.ctime())
 
 
-def prompter():
-    state = State.RUNNING
+def prompter(loop, event):
     while True:
-        print(["Paused", "Running"][state])
+        print(["Paused", "Running"][event.is_set()])
         input()
-        state = ~state
+        loop.call_soon_threadsafe(event.clear if event.is_set() else event.set)
+        time.sleep(0.1)
 
 
 def main(interval):
+    event = asyncio.Event()
+    event.set()
     loop = asyncio.get_event_loop()
-    loop.create_task(click(interval))
-    loop.run_in_executor(None, prompter)
+    loop.create_task(click(event, interval))
+    loop.run_in_executor(None, prompter, loop, event)
     try:
         loop.run_forever()
     except KeyboardInterrupt:
