@@ -4,13 +4,18 @@ import argparse
 import time
 
 
+left_down = lambda: ctypes.windll.user32.mouse_event(2, 0, 0, 0, 0)
+left_up = lambda: ctypes.windll.user32.mouse_event(4, 0, 0, 0, 0)
+
+
 async def click(event, delay=5):
-    while True:
-        await event.wait()
+    # while True:
+    while await event.wait():
         await asyncio.sleep(delay)
-        ctypes.windll.user32.mouse_event(2, 0, 0, 0, 0)  # left down
-        ctypes.windll.user32.mouse_event(4, 0, 0, 0, 0)  # left up
-        print(time.ctime())
+        if event.is_set():
+            left_down()
+            left_up()
+            print(time.ctime())
 
 
 def prompter(loop, event):
@@ -52,6 +57,6 @@ if __name__ == "__main__":
     interval = parse_args().interval
     print(
         f"Mouse will click every {interval} seconds\n"
-        "Press Enter for pause and resume program"
+        "Press Enter for pause and resume program\n"
     )
     main(interval)
