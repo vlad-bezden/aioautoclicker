@@ -33,3 +33,31 @@ To stop running press 'Ctrl'+'C' keys
 `pip install autoclicker-2.0.0-py3-none-any.whl`
 4. Run it
 `autoclicker -i 10`
+
+
+### Build tips
+There are two ways to build weels:
+1. using `setuptools.find_packages`
+2. explicitly specify packages for distribution
+
+#### Using setuptools.find_package
+This option requires `__init__.py` file in a package that has to be distributed. Without this file find_package method will not consider directory as a package
+
+`config.cfg` file configuration:
+
+```
+# config.cfg
+
+[options]
+packages = find:
+```
+
+#### Explicitly specify package
+This option is suitable for a small projects. Because packages entered manually, no `__init__.py` file is required in directories that has to be distributed instead in `setup.cfg` file specify directories that has has to be distributed as part of package
+
+```
+# config.cfg
+
+[options]
+packages = autoclicker
+```
