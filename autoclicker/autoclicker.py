@@ -25,7 +25,8 @@ def prompter(loop, event):
         time.sleep(0.1)
 
 
-def main(interval):
+def main():
+    interval = parse_args()
     event = asyncio.Event()
     event.set()
     loop = asyncio.get_event_loop()
@@ -41,21 +42,21 @@ def main(interval):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Simulate user mouse click")
-    delay = 60
+    interval = 60
     parser.add_argument(
         "-i",
         "--interval",
         type=int,
-        default=delay,
-        help=f"Time in seconds mouse will click. Default time is {delay} secs",
+        default=interval,
+        help=f"Time in seconds mouse will click. Default time is {interval} secs",
     )
-    return parser.parse_args()
-
-
-if __name__ == "__main__":
-    interval = parse_args().interval
+    interval = parser.parse_args().interval
     print(
         f"Mouse will click every {interval} seconds\n"
         "Press Enter for pause and resume program\n"
     )
-    main(interval)
+    return interval
+
+
+if __name__ == "__main__":
+    main()
