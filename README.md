@@ -14,7 +14,7 @@ Press 'Enter' key to 'Pause' and 'Resume' autoclicker
 To stop running press 'Ctrl'+'C' keys
 
 ## Requirements
-* Python 3.6 and up
+* Python 3.7 and up
 
   `pip install -r requirements.txt`
 
@@ -24,3 +24,12 @@ To stop running press 'Ctrl'+'C' keys
 * to build a wheel
 
   `python setup.py bdist_wheel`
+
+## Deployment
+1. Create wheel by
+`python setup.py bdist_wheel`
+2. Copy created wheel from `dist` directory to directory where you going to deploy it
+3. Install wheel
+`pip install autoclicker-2.0.0-py3-none-any.whl`
+4. Run it
+`autoclicker -i 10`
