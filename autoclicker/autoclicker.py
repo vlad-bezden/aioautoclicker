@@ -15,17 +15,16 @@ def mouse_click():
 async def click(event, delay):
     while await asyncio.wait([event.wait()]):
         for _ in pb.progressbar(range(delay)):
-            if event.is_set():
-                await asyncio.sleep(1)
-            else:
+            if not event.is_set():
                 break
+            await asyncio.sleep(1)
         mouse_click()
-        print(time.ctime())
 
 
 def prompter(loop, event):
     while True:
         print(["Paused", "Running"][event.is_set()])
+        print(time.ctime())
         input()
         loop.call_soon_threadsafe(event.clear if event.is_set() else event.set)
         time.sleep(0.1)
