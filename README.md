@@ -5,8 +5,9 @@
 ### Usage
 * python autoclicker.py
 
-  By default it clicks every 60 seconds
+  By default it clicks every 60 seconds and size of the progress bar is 60 chars
 * python autoclicker.py -i 10
+* autoclicker -i 10 -s 120
 
   This example will click every 10 seconds
 
@@ -16,21 +17,23 @@ To stop running press 'Ctrl'+'C' keys
 ## Requirements
 * Python 3.7 and up
 
-  `pip install -r requirements.txt`
+  `pip install -r requirements\prod.txt`
 
 ## Developers
-  `pip install -r requirements_dev.txt`
+  `pip install -r requirements\dev.txt`
 
 * to build a wheel
 
   `python setup.py bdist_wheel`
+* install wheel
+  `pip install <wheel>`
 
 ## Deployment
 1. Create wheel by
 `python setup.py bdist_wheel`
 2. Copy created wheel from `dist` directory to directory where you going to deploy it
 3. Install wheel
-`pip install autoclicker-2.0.0-py3-none-any.whl`
+`pip install <wheel>`
 4. Run it
 `autoclicker -i 10`
 
