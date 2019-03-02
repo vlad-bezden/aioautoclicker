@@ -14,19 +14,24 @@ def mouse_click():
 
 async def click(event, delay):
     while await asyncio.wait([event.wait()]):
-        for _ in pb.progressbar(range(delay)):
-            if not event.is_set():
+        await asyncio.sleep(0.2)
+        print("\r")
+        for i in range(delay + 1):
+            if event.is_set():
+                pb.show(i, delay)
+                await asyncio.sleep(1)
+            else:
                 break
-            await asyncio.sleep(1)
-        mouse_click()
+        else:
+            mouse_click()
 
 
 def prompter(loop, event):
     while True:
-        print(["Paused", "Running"][event.is_set()])
-        print(time.ctime())
+        print(f"{['Paused', 'Running'][event.is_set()]}\n{time.ctime()}")
         input()
         loop.call_soon_threadsafe(event.clear if event.is_set() else event.set)
+        # this is required so event will be set otherwise print above show wrong status
         time.sleep(0.1)
 
 
@@ -40,7 +45,7 @@ def main():
     try:
         loop.run_forever()
     except KeyboardInterrupt:
-        print("Exiting by user request")
+        print("\nExiting by user request")
     except Exception as e:
         print("Unexpected error: ", str(e))
 
