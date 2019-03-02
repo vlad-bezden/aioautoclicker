@@ -1,7 +1,9 @@
+import argparse
 import asyncio
 import ctypes
-import argparse
 import time
+
+from autoclicker import progress_bar as pb
 
 
 def mouse_click():
@@ -11,10 +13,14 @@ def mouse_click():
 
 
 async def click(event, delay):
-    while await asyncio.wait([event.wait(), asyncio.sleep(delay)]):
-        if event.is_set():
-            mouse_click()
-            print(time.ctime())
+    while await asyncio.wait([event.wait()]):
+        for _ in pb.progressbar(range(delay)):
+            if event.is_set():
+                await asyncio.sleep(1)
+            else:
+                break
+        mouse_click()
+        print(time.ctime())
 
 
 def prompter(loop, event):
