@@ -2,8 +2,22 @@ import argparse
 import asyncio
 import ctypes
 import time
+from sys import stdout
+from enum import IntFlag
 
-from autoclicker import progress_bar as pb
+
+class Status(IntFlag):
+    PAUSED = 0
+    RUNNING = 1
+
+
+status = Status.RUNNING
+
+
+def progress_bar(value: int, total: int, prefix: str = "", size: int = 60):
+    x = int(size * value / total)
+    stdout.write(f"{prefix}[{'#' * x}{'.' * (size - x)}] {value}/{total}\r")
+    stdout.flush()
 
 
 def mouse_click():
@@ -14,11 +28,11 @@ def mouse_click():
 
 async def click(event, delay):
     while await asyncio.wait([event.wait()]):
-        await asyncio.sleep(0.2)
+        await asyncio.sleep(0.1)
         print("\r")
         for i in range(delay + 1):
-            if event.is_set():
-                pb.show(i, delay)
+            if status == Status.RUNNING:
+                progress_bar(i, delay)
                 await asyncio.sleep(1)
             else:
                 break
@@ -27,12 +41,12 @@ async def click(event, delay):
 
 
 def prompter(loop, event):
+    global status
     while True:
-        print(f"{['Paused', 'Running'][event.is_set()]}\n{time.ctime()}")
+        print(f"{['Paused', 'Running'][status]}\t\t{time.ctime()}", end="")
         input()
-        loop.call_soon_threadsafe(event.clear if event.is_set() else event.set)
-        # this is required so event will be set otherwise print above show wrong status
-        time.sleep(0.1)
+        loop.call_soon_threadsafe(event.clear if status else event.set)
+        status ^= Status.RUNNING
 
 
 def main():
